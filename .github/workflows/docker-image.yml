@@ -31,5 +31,5 @@ jobs:
           # List of target platforms for build
           push: true
           # List of tags
-          tags: ghcr.io/TeamMasse/battlesnake:latest
+          tags: ghcr.io/teammasse/battlesnake:latest
                 
