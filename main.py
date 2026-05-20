@@ -1,14 +1,8 @@
-# Welcome to
-# __________         __    __  .__                               __
-# \______   \_____ _/  |__/  |_|  |   ____   ______ ____ _____  |  | __ ____
-#  |    |  _/\__  \\   __\   __\  | _/ __ \ /  ___//    \\__  \ |  |/ // __ \
-#  |    |   \ / __ \|  |  |  | |  |_\  ___/ \___ \|   |  \/ __ \|    <\  ___/
-#  |________/(______/__|  |__| |____/\_____>______>___|__(______/__|__\\_____>
-#
-# This file can be a nice home for your Battlesnake logic and helper functions.
-#
-# To get you started we've included code to prevent your Battlesnake from moving backwards.
-# For more info see docs.battlesnake.com
+# Felix Kleindienst
+# Pascal Schadei
+# Pauline Klingner
+# Robin Schneider
+# Theo Fischer 224200585
 
 import random
 import typing
@@ -22,7 +16,7 @@ def info() -> typing.Dict:
 
     return {
         "apiversion": "1",
-        "author": "",  # TODO: Your Battlesnake Username
+        "author": "Gruppe 6",  # TODO: Your Battlesnake Username
         "color": "#888888",  # TODO: Choose color
         "head": "default",  # TODO: Choose head
         "tail": "default",  # TODO: Choose tail
