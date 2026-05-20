@@ -30,6 +30,35 @@ def collision_detection(game_state: typing.Dict) -> typing.Dict:
                 is_move_safe["left"] = False
     return is_move_safe
 
+def choose_move(game_state: typing.Dict, safe_moves: list[str]) -> str:
+    '''
+    choose_move is called on every turn and returns the move that leads to food if there is food in the safe moves, otherwise it returns a random move from the safe moves
+    '''
+    is_move_safe = collision_detection(game_state)
+
+    # Are there any safe moves left?
+    safe_moves = []
+    for move, isSafe in is_move_safe.items():
+        if isSafe:
+            safe_moves.append(move)
+
+    if len(safe_moves) == 0:
+        print(
+            f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
+        return "down"
+    
+    food= game_state['board']['food']
+    my_head = game_state["you"]["body"][0]
+    for food_item in food:
+        if food_item["x"] == my_head["x"] and food_item["y"] == my_head["y"] + 1 and "up" in safe_moves:
+            return "up"
+        if food_item["x"] == my_head["x"] and food_item["y"] == my_head["y"] - 1 and "down" in safe_moves:
+            return "down"
+        if food_item["x"] == my_head["x"] + 1 and food_item["y"] == my_head["y"] and "right" in safe_moves:
+            return "right"
+        if food_item["x"] == my_head["x"] - 1 and food_item["y"] == my_head["y"] and "left" in safe_moves:
+            return "left"
+    return random.choice(safe_moves)
 
 def info() -> typing.Dict:
     '''
@@ -87,16 +116,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
         if isSafe:
             safe_moves.append(move)
 
-    if len(safe_moves) == 0:
-        print(
-            f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
-        return {"move": "down"}
-
-    # Choose a random move from the safe ones
-    next_move = random.choice(safe_moves)
-
-    # TODO: Step 4 - Move towards food instead of random, to regain health and survive longer
-    # food = game_state['board']['food']
+    next_move = choose_move(game_state, safe_moves)
 
     print(f"MOVE {game_state['turn']}: {next_move}")
     return {"move": next_move}
