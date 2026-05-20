@@ -4,14 +4,18 @@
 # Robin Schneider
 # Theo Fischer 224200585
 
+# running at
+# http://battlesnake.api64.de
+
 import random
 import typing
 
 
-# info is called when you create your Battlesnake on play.battlesnake.com
-# and controls your Battlesnake's appearance
-# TIP: If you open your Battlesnake URL in a browser you should see this data
 def info() -> typing.Dict:
+    '''
+    info is called when you create your Battlesnake on play.battlesnake.com
+    and controls your Battlesnake's appearance
+    '''
     print("INFO")
 
     return {
@@ -23,21 +27,27 @@ def info() -> typing.Dict:
     }
 
 
-# start is called when your Battlesnake begins a game
 def start(game_state: typing.Dict):
+    '''
+    start is called when your Battlesnake begins a game
+    '''
     print("GAME START")
 
 
-# end is called when your Battlesnake finishes a game
 def end(game_state: typing.Dict):
-    print("GAME OVER\n")
+    '''
+    end is called when your Battlesnake finishes a game and prints the reason why your Battlesnake lost or won
+    '''
+    print(f"GAME END: {game_state['board']['snakes'][0]['name']} {game_state['board']['snakes'][0]['id']} - {game_state['board']['snakes'][0]['health']} - {game_state['board']['snakes'][0]['length']} - {game_state['board']['snakes'][0]['shout']} - {game_state['board']['snakes'][0]['squad']}")
 
 
-# move is called on every turn and returns your next move
-# Valid moves are "up", "down", "left", or "right"
-# See https://docs.battlesnake.com/api/example-move for available data
 def move(game_state: typing.Dict) -> typing.Dict:
-    print(f"gamestate: {game_state}")
+    '''
+    move is called on every turn and returns your next move
+    '''
+
+    # print(f"gamestate: {game_state}") gamestate: {'game': {'id': '88582010-9529-4a44-8d16-173e3d37be94', 'ruleset': {'name': 'standard', 'version': 'v1.2.3', 'settings': {'foodSpawnChance': 15, 'minimumFood': 1, 'hazardDamagePerTurn': 0, 'hazardMap': '', 'hazardMapAuthor': '', 'royale': {'shrinkEveryNTurns': 0}, 'squad': {'allowBodyCollisions': False, 'sharedElimination': False, 'sharedHealth': False, 'sharedLength': False}}}, 'map': 'standard', 'timeout': 500, 'source': 'custom'}, 'turn': 100, 'board': {'height': 11, 'width': 11, 'snakes': [{'id': 'gs_MpSb6B4FpxrRkqBTYPw66BJY', 'name': 'github', 'latency': '23', 'health': 85, 'body': [{'x': 0, 'y': 6}, {'x': 0, 'y': 5}, {'x': 1, 'y': 5}, {'x': 2, 'y': 5}, {'x': 2, 'y': 4}, {'x': 2, 'y': 3}], 'head': {'x': 0, 'y': 6}, 'length': 6, 'shout': '', 'squad': '', 'customizations': {'color': '#888888', 'head': 'default', 'tail': 'default'}}], 'food': [{'x': 8, 'y': 10}, {'x': 5, 'y': 5}, {'x': 10, 'y': 6}, {'x': 9, 'y': 2}, {'x': 1, 'y': 0}, {'x': 2, 'y': 10}, {'x': 4, 'y': 0}, {'x': 10, 'y': 1}, {'x': 7, 'y': 7}, {'x': 1, 'y': 1}, {'x': 3, 'y': 0}], 'hazards': []}, 'you': {'id': 'gs_MpSb6B4FpxrRkqBTYPw66BJY', 'name': 'github', 'latency': '23', 'health': 85, 'body': [{'x': 0, 'y': 6}, {'x': 0, 'y': 5}, {'x': 1, 'y': 5}, {'x': 2, 'y': 5}, {'x': 2, 'y': 4}, {'x': 2, 'y': 3}], 'head': {'x': 0, 'y': 6}, 'length': 6, 'shout': '', 'squad': '', 'customizations': {'color': '#888888', 'head': 'default', 'tail': 'default'}}}
+
     is_move_safe = {"up": True, "down": True, "left": True, "right": True}
 
     # We've included code to prevent your Battlesnake from moving backwards
@@ -82,6 +92,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     # TODO: Step 3 - Prevent your Battlesnake from colliding with other Battlesnakes
     # opponents = game_state['board']['snakes']
+    
 
     # Are there any safe moves left?
     safe_moves = []
@@ -90,7 +101,8 @@ def move(game_state: typing.Dict) -> typing.Dict:
             safe_moves.append(move)
 
     if len(safe_moves) == 0:
-        print(f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
+        print(
+            f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
         return {"move": "down"}
 
     # Choose a random move from the safe ones
