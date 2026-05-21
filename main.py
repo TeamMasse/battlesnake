@@ -28,7 +28,19 @@ def collision_detection(game_state: typing.Dict) -> typing.Dict:
                 is_move_safe["right"] = False
             if (segment["x"] == my_head["x"] - 1 and segment["y"] == my_head["y"]) or my_head["x"] == 0:
                 is_move_safe["left"] = False
+        head = snake['head']
+        if head["x"] == my_head["x"] and head["y"] == my_head["y"]:
+            continue
+        if (abs(head["x"] - my_head["x"]) == 1 and head["y"] == my_head["y"] + 1) or (head["x"] == my_head["x"] and head["y"] == my_head["y"] + 2):
+            is_move_safe["up"] = False
+        if (abs(head["x"] - my_head["x"]) == 1 and head["y"] == my_head["y"] - 1) or (head["x"] == my_head["x"] and head["y"] == my_head["y"] - 2):
+            is_move_safe["down"] = False
+        if (head["x"] == my_head["x"] + 1 and abs(head["y"] - my_head["y"]) == 1) or (head["x"] == my_head["x"] + 2 and head["y"] == my_head["y"]):
+            is_move_safe["right"] = False
+        if (head["x"] == my_head["x"] - 1 and abs(head["y"] - my_head["y"]) == 1) or (head["x"] == my_head["x"] - 2 and head["y"] == my_head["y"]):
+            is_move_safe["left"] = False
     return is_move_safe
+
 
 def choose_move(game_state: typing.Dict, safe_moves: list[str]) -> str:
     '''
@@ -46,8 +58,8 @@ def choose_move(game_state: typing.Dict, safe_moves: list[str]) -> str:
         print(
             f"MOVE {game_state['turn']}: No safe moves detected! Moving down")
         return "down"
-    
-    food= game_state['board']['food']
+
+    food = game_state['board']['food']
     my_head = game_state["you"]["body"][0]
     for food_item in food:
         if food_item["x"] == my_head["x"] and food_item["y"] == my_head["y"] + 1 and "up" in safe_moves:
@@ -59,6 +71,7 @@ def choose_move(game_state: typing.Dict, safe_moves: list[str]) -> str:
         if food_item["x"] == my_head["x"] - 1 and food_item["y"] == my_head["y"] and "left" in safe_moves:
             return "left"
     return random.choice(safe_moves)
+
 
 def info() -> typing.Dict:
     '''
