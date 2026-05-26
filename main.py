@@ -68,7 +68,7 @@ def choose_move(game_state: typing.Dict, safe_moves: list[str]) -> str:
 
     food = game_state['board']['food']
     my_head = game_state["you"]["body"][0]
-    preferred_moves = []
+    preferred_moves = safe_moves.copy()
     min_distance = float('inf')
     for move in preferred_moves:
         if move == "up":
