@@ -7,6 +7,7 @@
 # running at
 # http://battlesnake.api64.de
 
+import copy
 import random
 import typing
 import itertools
@@ -28,7 +29,7 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
         return (1, 1, 0)
     else:
         # determine the safe moves for each snake so that we can predict the position of the snake heads in the next turn
-        predicted_game_state = small_game_state.copy()
+        predicted_game_state = copy.deepcopy(small_game_state)
         safe_moves = {}
         for snake in small_game_state['board']['snakes']:
             is_move_safe = collision_detection(small_game_state, snake['head'])
@@ -58,7 +59,7 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
         tries = 0
         alive = 0
         for move_set in choices:
-            choice_game_state = predicted_game_state.copy()
+            choice_game_state = copy.deepcopy(predicted_game_state)
             for snake in choice_game_state['board']['snakes']:
                 move = move_set.get(snake['id'])
                 if move == "up":
@@ -83,7 +84,7 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
     it uses the predict_game_state function to predict the game state for the next turn
     '''
     # determine the safe moves for each snake so that we can predict the position of the snake heads in the next turn
-    predicted_game_state = small_game_state.copy()
+    predicted_game_state = copy.deepcopy(small_game_state)
     safe_moves = {}
     for snake in small_game_state['board']['snakes']:
         is_move_safe = collision_detection(small_game_state, snake['head'])
@@ -110,7 +111,7 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
     tries = 0
     alive = 0
     for move_set in choices:
-        choice_game_state = predicted_game_state.copy()
+        choice_game_state = copy.deepcopy(predicted_game_state)
         for snake in choice_game_state['board']['snakes']:
             move = move_set.get(snake['id'])
             if move == "up":
@@ -266,7 +267,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
     'hazards': []}, 
     'you': {'id': 'gs_MpSb6B4FpxrRkqBTYPw66BJY', 'name': 'github', 'latency': '23', 'health': 86, 'body': [{'x': 0, 'y': 5}, {'x': 1, 'y': 5}, {'x': 2, 'y': 5}, {'x': 2, 'y': 4}, {'x': 2, 'y': 3}, {'x': 3, 'y': 3}], 'head': {'x': 0, 'y': 5}, 'length': 6, 'shout': '', 'squad': '', 'customizations': {'color': '#888888', 'head': 'default', 'tail': 'default'}}}
     '''
-    small_game_state = game_state.copy()
+    small_game_state = copy.deepcopy(game_state)
     small_game_state.pop("game")
     for snake in small_game_state['board']['snakes']:
         snake.pop("customizations")
