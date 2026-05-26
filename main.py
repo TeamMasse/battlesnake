@@ -158,7 +158,7 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
         outcome = predict_game_state(choice_game_state, recursion_depth - 1)
         tries += outcome[0]
         alive += outcome[1]
-    print(f"move: {first_move}, tries: {tries}, alive: {alive}")
+    print(f"choices: {len(choices)}, move: {first_move}, tries: {tries}, alive: {alive}")
     return alive / tries if tries > 0 else 0.0
 
 
