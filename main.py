@@ -11,6 +11,24 @@ import copy
 import random
 import typing
 import itertools
+import time
+import sys
+import signal
+
+running = True
+
+def handle_sigterm(signum, frame):
+    global running
+    print("SIGTERM received")
+    running = False
+
+signal.signal(signal.SIGTERM, handle_sigterm)
+
+while running:
+    time.sleep(1)
+
+print("clean exit")
+sys.exit(0)
 
 
 def food_distance(food: typing.Dict, head: typing.Dict) -> int:
