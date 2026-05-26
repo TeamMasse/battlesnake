@@ -11,6 +11,7 @@ import random
 import typing
 import itertools
 
+
 def food_distance(food: typing.Dict, head: typing.Dict) -> int:
     '''
     food_distance calculates the distance from the head to the food using the Manhattan distance formula
@@ -37,20 +38,23 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
                 if isSafe:
                     safe_moves[snake['id']].append(move)
             if len(safe_moves) == 0 and snake['id'] == small_game_state['you']['id']:
-                return (1, 0, 0) # TODO: might want to return a different value instead of 1 here to indicate at which recursion depth we died
+                # TODO: might want to return a different value instead of 1 here to indicate at which recursion depth we died
+                return (1, 0, 0)
             elif len(safe_moves) == 0:
                 predicted_game_state['board']['snakes'].remove(snake)
-        
+
         # build choices as a list of complete move-sets (one move per snake)
         # each element is a dict mapping snake_id -> move
         choices = []
-        snake_ids = [snake['id'] for snake in predicted_game_state['board']['snakes']]
+        snake_ids = [snake['id']
+                     for snake in predicted_game_state['board']['snakes']]
         moves_lists = [safe_moves.get(sid, []) for sid in snake_ids]
         # Cartesian product of moves for all snakes
         for combo in itertools.product(*moves_lists):
-            move_set = {snake_id: move for snake_id, move in zip(snake_ids, combo)}
+            move_set = {snake_id: move for snake_id,
+                        move in zip(snake_ids, combo)}
             choices.append(move_set)
-        
+
         tries = 0
         alive = 0
         for move_set in choices:
@@ -65,10 +69,11 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
                     snake['head']['x'] += 1
                 elif move == "left":
                     snake['head']['x'] -= 1
-            outcome = predict_game_state(choice_game_state, recursion_depth - 1)
+            outcome = predict_game_state(
+                choice_game_state, recursion_depth - 1)
             tries += outcome[0]
             alive += outcome[1]
-        
+
         return (tries, alive, 0)
 
 
@@ -89,18 +94,19 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
                 safe_moves[snake['id']].append(move)
         if len(safe_moves) == 0:
             predicted_game_state['board']['snakes'].remove(snake)
-        
+
     # build choices as a list of complete move-sets (one move per snake)
     # each element is a dict mapping snake_id -> move
     choices = []
-    snake_ids = [snake['id'] for snake in predicted_game_state['board']['snakes']]
+    snake_ids = [snake['id']
+                 for snake in predicted_game_state['board']['snakes']]
     moves_lists = [safe_moves.get(sid, []) for sid in snake_ids]
     # Cartesian product of moves for all snakes
     for combo in itertools.product(*moves_lists):
         move_set = {snake_id: move for snake_id, move in zip(snake_ids, combo)}
         if first_move == move_set.get(small_game_state['you']['id']):
             choices.append(move_set)
-        
+
     tries = 0
     alive = 0
     for move_set in choices:
@@ -140,7 +146,7 @@ def collision_detection(small_game_state: typing.Dict, my_head: typing.Dict) -> 
                 is_move_safe["right"] = False
             if (segment["x"] == my_head["x"] - 1 and segment["y"] == my_head["y"]) or my_head["x"] == 0:
                 is_move_safe["left"] = False
-                
+
     # Try to not move into a position where the opponent can also move to.
     is_move_very_safe = is_move_safe.copy()
     for snake in snakes:
@@ -157,7 +163,7 @@ def collision_detection(small_game_state: typing.Dict, my_head: typing.Dict) -> 
             is_move_very_safe["left"] = False
         if is_move_very_safe["up"] == False and is_move_very_safe["right"] == False and is_move_very_safe["down"] == False and is_move_very_safe["left"] == False:
             return is_move_safe
-            
+
     return is_move_very_safe
 
 
@@ -199,9 +205,9 @@ def choose_move(small_game_state: typing.Dict, safe_moves: list[str]) -> str:
                 preferred_moves= [move]
             elif distance == min_distance:
                 preferred_moves.append(move)'''
-    
+
     max_score = float('-inf')
-    preferred_moves = safe_moves.copy()           
+    preferred_moves = safe_moves.copy()
     for move in safe_moves:
         score = predict_game_tree(small_game_state, 3, move)
         if score > max_score:
@@ -264,7 +270,8 @@ def move(game_state: typing.Dict) -> typing.Dict:
     small_game_state.pop("game")
     for snake in small_game_state['board']['snakes']:
         snake.pop("customizations")
-    is_move_safe = collision_detection(small_game_state, game_state["you"]["head"])
+    is_move_safe = collision_detection(
+        small_game_state, game_state["you"]["head"])
 
     # Are there any safe moves left?
     safe_moves = []
