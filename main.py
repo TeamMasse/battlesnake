@@ -28,11 +28,11 @@ def handle_sigterm(signum, frame):
 signal.signal(signal.SIGTERM, handle_sigterm)
 
 
-def food_distance(food: typing.Dict, head: typing.Dict) -> int:
+def distance(obj: typing.Dict, head: typing.Dict) -> int:
     '''
-    food_distance calculates the distance from the head to the food using the Manhattan distance formula
+    distance calculates the distance from the head to an object using the Manhattan distance formula
     '''
-    return abs(food["x"] - head["x"]) + abs(food["y"] - head["y"])
+    return abs(obj["x"] - head["x"]) + abs(obj["y"] - head["y"])
 
 
 def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> typing.Tuple[int, int, int]:
@@ -47,6 +47,8 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
         predicted_game_state = copy.deepcopy(small_game_state)
         safe_moves = {}
         for snake in small_game_state['board']['snakes']:
+            if distance(snake['head'], small_game_state['you']['head']) > 2*recursion_depth:
+                continue
             is_move_safe = collision_detection(small_game_state, snake['head'])
             # collect safe moves per snake
             safe_moves[snake['id']] = []
@@ -58,6 +60,9 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
                 return (1, 0, 0)
             elif len(safe_moves) == 0:
                 predicted_game_state['board']['snakes'].remove(snake)
+
+        for snake in predicted_game_state['board']['snakes']:
+            snake['body'].pop()  # remove tail segment to simulate movement
 
         # build choices as a list of complete move-sets (one move per snake)
         # each element is a dict mapping snake_id -> move
@@ -80,19 +85,15 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
                 if move == "up":
                     snake['head']['y'] += 1
                     snake['body'].insert(0, copy.deepcopy(snake['head']))
-                    snake['body'].pop()
                 elif move == "down":
                     snake['head']['y'] -= 1
                     snake['body'].insert(0, copy.deepcopy(snake['head']))
-                    snake['body'].pop()
                 elif move == "right":
                     snake['head']['x'] += 1
                     snake['body'].insert(0, copy.deepcopy(snake['head']))
-                    snake['body'].pop()
                 elif move == "left":
                     snake['head']['x'] -= 1
                     snake['body'].insert(0, copy.deepcopy(snake['head']))
-                    snake['body'].pop()
             outcome = predict_game_state(
                 choice_game_state, recursion_depth - 1)
             tries += outcome[0]
@@ -110,6 +111,8 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
     predicted_game_state = copy.deepcopy(small_game_state)
     safe_moves = {}
     for snake in small_game_state['board']['snakes']:
+        if distance(snake['head'], small_game_state['you']['head']) > 2*recursion_depth:
+            continue
         is_move_safe = collision_detection(small_game_state, snake['head'])
         # collect safe moves per snake
         safe_moves[snake['id']] = []
@@ -119,6 +122,9 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
         if len(safe_moves) == 0:
             predicted_game_state['board']['snakes'].remove(snake)
 
+    for snake in predicted_game_state['board']['snakes']:
+        snake['body'].pop()  # remove tail segment to simulate movement
+       
     # build choices as a list of complete move-sets (one move per snake)
     # each element is a dict mapping snake_id -> move
     choices = []
@@ -140,19 +146,15 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
             if move == "up":
                 snake['head']['y'] += 1
                 snake['body'].insert(0, copy.deepcopy(snake['head']))
-                snake['body'].pop()
             elif move == "down":
                 snake['head']['y'] -= 1
                 snake['body'].insert(0, copy.deepcopy(snake['head']))
-                snake['body'].pop()
             elif move == "right":
                 snake['head']['x'] += 1
                 snake['body'].insert(0, copy.deepcopy(snake['head']))
-                snake['body'].pop()
             elif move == "left":
                 snake['head']['x'] -= 1
                 snake['body'].insert(0, copy.deepcopy(snake['head']))
-                snake['body'].pop()
         outcome = predict_game_state(choice_game_state, recursion_depth - 1)
         tries += outcome[0]
         alive += outcome[1]
@@ -241,11 +243,11 @@ def choose_move(small_game_state: typing.Dict, safe_moves: list[str]) -> str:
         else:  # move == "left"
             target = {"x": my_head["x"] - 1, "y": my_head["y"]}
         for food_item in food:
-            distance = food_distance(food_item, target)
-            if distance < min_distance:
-                min_distance = distance
+            food_distance = distance(food_item, target)
+            if food_distance < min_distance:
+                min_distance = food_distance
                 hungry_moves= [move]
-            elif distance == min_distance:
+            elif food_distance == min_distance:
                 hungry_moves.append(move)
 
     
