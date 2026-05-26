@@ -118,9 +118,7 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
         outcome = predict_game_state(choice_game_state, recursion_depth - 1)
         tries += outcome[0]
         alive += outcome[1]
-    tries = 0
-    times_alive = 0
-    return 1.0/(tries/times_alive)
+    return alive / tries if tries > 0 else 0.0
 
 
 def collision_detection(small_game_state: typing.Dict, my_head: typing.Dict) -> typing.Dict:
