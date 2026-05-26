@@ -55,10 +55,10 @@ def predict_game_state(small_game_state: typing.Dict, recursion_depth: int) -> t
             for move, isSafe in is_move_safe.items():
                 if isSafe:
                     safe_moves[snake['id']].append(move)
-            if len(safe_moves) == 0 and snake['id'] == small_game_state['you']['id']:
+            if len(safe_moves[snake['id']]) == 0 and snake['id'] == small_game_state['you']['id']:
                 # TODO: might want to return a different value instead of 1 here to indicate at which recursion depth we died
                 return (1, 0, 0)
-            elif len(safe_moves) == 0:
+            elif len(safe_moves[snake['id']]) == 0:
                 predicted_game_state['board']['snakes'].remove(snake)
 
         for snake in predicted_game_state['board']['snakes']:
@@ -119,7 +119,7 @@ def predict_game_tree(small_game_state: typing.Dict, recursion_depth: int, first
         for move, isSafe in is_move_safe.items():
             if isSafe:
                 safe_moves[snake['id']].append(move)
-        if len(safe_moves) == 0:
+        if len(safe_moves[snake['id']]) == 0:
             predicted_game_state['board']['snakes'].remove(snake)
 
     for snake in predicted_game_state['board']['snakes']:
