@@ -11,6 +11,7 @@ import copy
 import random
 import typing
 import itertools
+
 import time
 import sys
 import signal
@@ -18,6 +19,7 @@ import signal
 running = True
 
 def handle_sigterm(signum, frame):
+    '''Handle SIGTERM signal to allow for graceful and fast shutdown'''
     global running
     print("SIGTERM received")
     running = False
