@@ -146,12 +146,14 @@ def food_lead(small_game_state: typing.Dict) -> typing.Dict:
     for food in small_game_state['board']['food']:
         my_dist = distance(food, small_game_state['you']['head'])
         for snake in small_game_state['board']['snakes']:
-            if distance(food, snake['head']) < my_dist:
-                if food in prio[snake]:
-                    # if the snake priorities the food is very bad
-                    advantage[food] -= 2*distance(food, snake['head'])
+            if food in prio[snake]:
+                if distance(food, snake['head']) < my_dist:
+                    # if the snake priorities the food and we have disadvantage, it is very bad
+                    advantage[food] += 2*(distance(food, snake['head'])-my_dist)
                 else:
-                    advantage[food] -= distance(food, snake['head'])
+                advantage[food] += distance(food, snake['head'])-my_dist
+            else:
+                advantage[food] += distance(food, snake['head'])-my_dist
 
     return  advantage
 
