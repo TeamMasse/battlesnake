@@ -5,4 +5,5 @@
 # Theo Fischer 224200585
 
 main.py enthält die Implementierung
+
 KITheorie.pdf bzw. docx enthält den Theorieteil
