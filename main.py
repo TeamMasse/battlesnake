@@ -475,7 +475,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     # Wait until process finishes or timeout occurs
     while(p.is_alive):
-        if time.time() >= timeout - 20: 
+        if time.time() >= timeout - 200: 
             p.terminate()
             p.join()
     
