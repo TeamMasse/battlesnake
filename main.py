@@ -151,7 +151,7 @@ def food_lead(small_game_state: typing.Dict) -> typing.Dict:
                     # if the snake priorities the food and we have disadvantage, it is very bad
                     advantage[food] += 2*(distance(food, snake['head'])-my_dist)
                 else:
-                advantage[food] += distance(food, snake['head'])-my_dist
+                    advantage[food] += distance(food, snake['head'])-my_dist
             else:
                 advantage[food] += distance(food, snake['head'])-my_dist
 
