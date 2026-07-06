@@ -392,6 +392,7 @@ def choose_move(small_game_state: typing.Dict, safe_moves: list[str]):
             elif food_distance == min_distance:
                 hungry_moves.append(move)
 
+    move_q.put(random.choice(hungry_moves))
     return random.choice(hungry_moves)
 
 def info() -> typing.Dict:
