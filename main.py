@@ -132,28 +132,37 @@ def food_lead(small_game_state: typing.Dict) -> typing.Dict:
     '''
     food_lead returns a rating for every food how likely to reach against the snakes which are closer than us
     '''
-    advantage = {f : 0 for f in small_game_state['board']['food']}
+    foods = [(food["x"], food["y"]) for food in small_game_state['board']['food']]
+    if not foods:
+        return {}
+
+    advantage = {food: 0 for food in foods}
     # which food is the closest to each snake and which the snake will likely priorities
-    prio = {snake : list(small_game_state['board']['food'][0]) for snake in small_game_state['board']['snakes']}
+    prio = {snake['id']: [foods[0]] for snake in small_game_state['board']['snakes']}
 
     for snake in small_game_state['board']['snakes']:
-        for food in small_game_state['board']['food']:
-            if distance(food, snake['head']) < distance(prio[snake][0], snake['head']):
-                prio[snake] = list(food)
-            if distance(food, snake['head']) == distance(prio[snake][0], snake['head']):
-                prio[snake].append(food)
+        snake_id = snake['id']
+        for food in foods:
+            food_point = {"x": food[0], "y": food[1]}
+            prio_point = {"x": prio[snake_id][0][0], "y": prio[snake_id][0][1]}
+            if distance(food_point, snake['head']) < distance(prio_point, snake['head']):
+                prio[snake_id] = [food]
+            if distance(food_point, snake['head']) == distance(prio_point, snake['head']):
+                prio[snake_id].append(food)
 
-    for food in small_game_state['board']['food']:
-        my_dist = distance(food, small_game_state['you']['head'])
+    for food in foods:
+        food_point = {"x": food[0], "y": food[1]}
+        my_dist = distance(food_point, small_game_state['you']['head'])
         for snake in small_game_state['board']['snakes']:
-            if food in prio[snake]:
-                if distance(food, snake['head']) < my_dist:
+            snake_id = snake['id']
+            if food in prio[snake_id]:
+                if distance(food_point, snake['head']) < my_dist:
                     # if the snake priorities the food and we have disadvantage, it is very bad
-                    advantage[food] += 2*(distance(food, snake['head'])-my_dist)
+                    advantage[food] += 2*(distance(food_point, snake['head'])-my_dist)
                 else:
-                    advantage[food] += distance(food, snake['head'])-my_dist
+                    advantage[food] += distance(food_point, snake['head'])-my_dist
             else:
-                advantage[food] += distance(food, snake['head'])-my_dist
+                advantage[food] += distance(food_point, snake['head'])-my_dist
 
     return  advantage
 
@@ -463,9 +472,9 @@ def move(game_state: typing.Dict) -> typing.Dict:
 
     # Do we have an advantage to any food items?
     advantages = []
-    for lead in food_leads.items():
-        if lead > 0: 
-            advantages.append(lead)
+    for food, lead in food_leads.items():
+        if lead > 0:
+            advantages.append(food)
     
     if not advantages:
         p = Process(target=choose_move, args=(small_game_state, safe_moves))
@@ -473,9 +482,10 @@ def move(game_state: typing.Dict) -> typing.Dict:
     else: 
         # Routing function no yet implemented, so a random save move will be chosen instead
         next_move = random.choice(safe_moves)
+        move_q.put(next_move)
 
     # Wait until process finishes or timeout occurs
-    while(p.is_alive):
+    while 'p' in locals() and p.is_alive():
         if time.time() >= timeout - 200: 
             p.terminate()
             p.join()
