@@ -356,15 +356,15 @@ def choose_move(small_game_state: typing.Dict, safe_moves: list[str]):
         move_q.put("down")
         return
 
-    recursion_depth = 4
+    recursion_depth = 3
     close_snakes = 0
     for snake in small_game_state['board']['snakes']:
         if distance(snake['head'], my_head) <= 2*recursion_depth:
             close_snakes += 1
     if close_snakes == 1:
-        recursion_depth = 3
-    if close_snakes >= 2:
         recursion_depth = 2
+    if close_snakes >= 2:
+        recursion_depth = 1
 
 
     max_score = float('-inf')
