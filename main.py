@@ -489,7 +489,7 @@ def move(game_state: typing.Dict) -> typing.Dict:
         if time.time() >= timeout - 200: 
             p.terminate()
             p.join()
-    
+    print(f"TIME: {time.time() - start:.4f}s")
     next_move = move_q.get()
     if not next_move: 
         next_move = random.choice(safe_moves)
