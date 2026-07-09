@@ -23,15 +23,16 @@ import heapq
 move_q = Queue()
 
 #def handle_sigterm(signum, frame):
-    '''
+'''
     Handle SIGTERM signal for a clean shutdown.
-    '''
+'''
 '''    print("SIGTERM received: shutting down")
     # Raise SystemExit to allow normal interpreter shutdown and cleanup
     raise SystemExit(0)
 
 
-signal.signal(signal.SIGTERM, handle_sigterm)'''
+signal.signal(signal.SIGTERM, handle_sigterm)
+'''
 
 
 def distance(obj: typing.Dict, head: typing.Dict) -> int:
