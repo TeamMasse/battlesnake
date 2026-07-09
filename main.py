@@ -22,7 +22,7 @@ import heapq
 # Queue in which computed moves need to be put for multiprocessing to work
 move_q = Queue()
 
-'''
+"""
 def handle_sigterm(signum, frame):
 
     Handle SIGTERM signal for a clean shutdown.
@@ -33,7 +33,7 @@ def handle_sigterm(signum, frame):
 
 
 signal.signal(signal.SIGTERM, handle_sigterm)
-'''
+"""
 
 
 def distance(obj: typing.Dict, head: typing.Dict) -> int:
