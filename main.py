@@ -485,10 +485,13 @@ def move(game_state: typing.Dict) -> typing.Dict:
         move_q.put(next_move)
 
     # Wait until process finishes or timeout occurs
+    print("timeout loop")
     while 'p' in locals() and p.is_alive():
         if time.time() >= timeout - 200: 
+            print("timeout")
             p.terminate()
             p.join()
+        print("no timeout")
     print(f"TIME: {time.time() - start:.4f}s")
     next_move = move_q.get()
     if not next_move: 
