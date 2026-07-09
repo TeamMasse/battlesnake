@@ -358,13 +358,13 @@ def choose_move(small_game_state: typing.Dict, safe_moves: list[str]):
         move_q.put("down")
         return
 
-    recursion_depth = 3
+    recursion_depth = 2
     close_snakes = 0
     for snake in small_game_state['board']['snakes']:
         if distance(snake['head'], my_head) <= 2*recursion_depth:
             close_snakes += 1
     if close_snakes == 1:
-        recursion_depth = 2
+        recursion_depth = 1
     if close_snakes >= 2:
         recursion_depth = 1
 
@@ -479,21 +479,12 @@ def move(game_state: typing.Dict) -> typing.Dict:
             advantages.append(food)
     
     if not advantages:
-        p = Process(target=choose_move, args=(small_game_state, safe_moves))
-        p.start()
+        next_move = choose_move(small_game_state, safe_moves)
     else: 
         # Routing function no yet implemented, so a random save move will be chosen instead
         next_move = random.choice(safe_moves)
         move_q.put(next_move)
 
-    # Wait until process finishes or timeout occurs
-    print("timeout loop")
-    while 'p' in locals() and p.is_alive():
-        if time.time() >= timeout - 200: 
-            print("timeout")
-            p.terminate()
-            p.join()
-        print("no timeout")
     print(f"TIME: {time.time() - start:.4f}s")
     next_move = move_q.get()
     if not next_move: 
